@@ -3,16 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace mKowalskiStudia
+namespace WebApi
 {
-    public class RPN
+    public class RPNclass
     {
+        public static string EchoTest = "Echo!";
         public string ErrorLog="No issues";
         public string Infix_Tokens_String = "";
         public string Postfix_Tokens_String = "";
         public string[] Infix_Tokens_Array;
         public string[] Postfix_Tokens_Array;
-        public RPN(string input)
+        public RPNclass(string input)
         {
             string tmpString = inputCheck(input);
             if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { /*Console.WriteLine(tmpString);*/ ErrorLog = tmpString; return; }

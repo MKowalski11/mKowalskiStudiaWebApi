@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using WebApi;
 
 namespace WebApi.Controllers
 {
@@ -15,13 +16,31 @@ namespace WebApi.Controllers
 	    [Route("tokens")]
         public IActionResult Get(string formula)
         {
+            
             string stan = "ok";
-            var data = new
+            WebApi.RPNclass result = new WebApi.RPNclass(formula);
+            if (result.ErrorLog[0] == 'E' && result.ErrorLog[1] == 'r' && result.ErrorLog[2] == 'r')
             {
-                status = stan,
-                formula = formula
-            };
-            return Ok(data);
+                var data = new
+                {
+                    status = "error",
+                    message = result.ErrorLog
+                };
+                return Ok(data);
+            }
+            else
+            {
+                var data = new
+                {
+                    status = stan,
+                    //formula = formula
+                    infix = result.Infix_Tokens_Array,
+                    rpn = result.Postfix_Tokens_Array
+                    
+                };
+                return Ok(data);
+            }
+            //return Ok(data);
         }
         [HttpGet]
         [Produces("application/json")]
