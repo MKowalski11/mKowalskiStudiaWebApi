@@ -49,7 +49,17 @@ namespace WebApi.Controllers
         {
             string stan = "ok";
             double tmpDouble;
-            if (double.TryParse(X, out tmpDouble) != true)
+            WebApi.RPNclass result = new WebApi.RPNclass(formula);
+            if (result.ErrorLog[0] == 'E' && result.ErrorLog[1] == 'r' && result.ErrorLog[2] == 'r')
+            {
+                var data = new
+                {
+                    status = "error",
+                    message = result.ErrorLog
+                };
+                return Ok(data);
+            }
+            else if (double.TryParse(X, out tmpDouble) != true)
             {
                 var data = new
                 {
@@ -58,14 +68,26 @@ namespace WebApi.Controllers
                 };
                 return Ok(data);
             }
-            else { 
-            var data = new
-            {
-                status = stan,
-                formula = formula,
-                X = tmpDouble
-            };
-            return Ok(data);
+            else {
+                string wynik = RPNclass.PostfixCalcSingleX(result.Postfix_Tokens_Array, tmpDouble);
+                if (double.TryParse(wynik, out tmpDouble) != true)
+                {
+                    var data = new
+                    {
+                        status = "error",
+                        message = wynik
+                    };
+                    return Ok(data);
+                }
+                else
+                {
+                    var data = new
+                    {
+                        status = stan,
+                        result = tmpDouble
+                    };
+                    return Ok(data);
+                }
             }
         }
         [HttpGet]
