@@ -449,16 +449,28 @@ namespace WebApi
 
             return S.Pop().ToString();
         }
-        public static void PostfixCalcMultiX(string[] input,double X, double X_min, double X_max, int N)
+        public static string PostfixCalcMultiX(string[] input,double X, double X_min, double X_max, int N)
         {
             double step = (X_max - X_min) / (N - 1);
-            for(int i = 0; i < N; i++)
+
+            for (int i = 0; i < N; i++)
             {
-                Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
             }
-            return;
-
-
+            return (X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+        }
+        public static bool PostfixCalcMultiXCheck(string[] input, double X, double X_min, double X_max, int N)
+        {
+            double step = (X_max - X_min) / (N - 1);
+            bool flagError = false;
+            string tmpString = "jest ok";
+            for (int i = 0; i < N; i++)
+            {
+                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+                tmpString = PostfixCalcSingleX(input, X_min + (step * i));
+                if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { flagError = true; return flagError; }
+            }
+            return flagError;
         }
     }
 }
