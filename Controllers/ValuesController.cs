@@ -6,40 +6,54 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ONPController: ControllerBase
     {
-        // GET api/values
+	    [HttpGet]
+        [Produces("application/json")]
+	    [Route("tokens")]
+        public IActionResult Get(string formula)
+        {
+            string stan = "ok";
+            var data = new
+            {
+                status = stan,
+                formula = formula
+            };
+            return Ok(data);
+        }
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        [Produces("application/json")]
+        [Route("calculate")]
+        public IActionResult Get(string formula, double X)
         {
-            return new string[] { "value1", "value2" };
+            string stan = "ok";
+            if(double.TryParse())
+            var data = new
+            {
+                status = stan,
+                formula = formula,
+                X = X
+            };
+            return Ok(data);
         }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet]
+        [Produces("application/json")]
+        [Route("calculate/xy")]
+       
+        public IActionResult Get(string formula, double from, double to, int n)
         {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            string stan = "ok";
+            var data = new
+            {
+                status = stan,
+                formula = formula,
+                from = from,
+                to = to,
+                n = n
+            };
+            return Ok(data);
         }
     }
 }
