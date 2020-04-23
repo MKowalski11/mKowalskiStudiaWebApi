@@ -449,15 +449,17 @@ namespace WebApi
 
             return S.Pop().ToString();
         }
-        public static string PostfixCalcMultiX(string[] input,double X, double X_min, double X_max, int N)
+        public static string[,] PostfixCalcMultiX(string[] input, double X, double X_min, double X_max, int N)
         {
             double step = (X_max - X_min) / (N - 1);
-
+            string[,] tablica = new string[N, 2];
             for (int i = 0; i < N; i++)
             {
                 //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+                tablica[i, 0] = (X_min + (step * i)).ToString();
+                tablica[i,1] = PostfixCalcSingleX(input, X_min + (step * i));
             }
-            return (X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+            return tablica;
         }
         public static bool PostfixCalcMultiXCheck(string[] input, double X, double X_min, double X_max, int N)
         {
