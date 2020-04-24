@@ -16,9 +16,9 @@ namespace WebApi.Controllers
 	    [Route("tokens")]
         public IActionResult Get(string formula)
         {
-            
             string stan = "ok";
             WebApi.RPNclass result = new WebApi.RPNclass(formula);
+            //obiekt result ustawi ErrorLog na "Error"(+treść) w przypadku błędnego stringu zawierającego formułę
             if (result.ErrorLog[0] == 'E' && result.ErrorLog[1] == 'r' && result.ErrorLog[2] == 'r')
             {
                 var data = new
@@ -33,14 +33,11 @@ namespace WebApi.Controllers
                 var data = new
                 {
                     status = stan,
-                    //formula = formula
                     infix = result.Infix_Tokens_Array,
                     rpn = result.Postfix_Tokens_Array
-                    
                 };
                 return Ok(data);
             }
-            //return Ok(data);
         }
         [HttpGet]
         [Produces("application/json")]
@@ -50,6 +47,7 @@ namespace WebApi.Controllers
             string stan = "ok";
             double tmpDouble;
             WebApi.RPNclass result = new WebApi.RPNclass(formula);
+            //ErrorLog będzie miał "Error" na początku stringa jeśli wystąpi problem
             if (result.ErrorLog[0] == 'E' && result.ErrorLog[1] == 'r' && result.ErrorLog[2] == 'r')
             {
                 var data = new
@@ -59,6 +57,7 @@ namespace WebApi.Controllers
                 };
                 return Ok(data);
             }
+            //Sprawdzanie X, czy da się zparseować do double.
             else if (double.TryParse(X, out tmpDouble) != true)
             {
                 var data = new
@@ -70,6 +69,7 @@ namespace WebApi.Controllers
             }
             else {
                 string wynik = RPNclass.PostfixCalcSingleX(result.Postfix_Tokens_Array, tmpDouble);
+                //wynik zostanie zwrócony jako string - albo liczba/wynik albo error code w przypadku niedozwolonej operacji/wyjątku co należy zweryfikować
                 if (double.TryParse(wynik, out tmpDouble) != true)
                 {
                     var data = new
@@ -99,6 +99,7 @@ namespace WebApi.Controllers
             double tmpDouble, tmpDouble2;
             int tmpInt;
             WebApi.RPNclass wynik = new WebApi.RPNclass(formula);
+            //sprawdzamy czy udało się rozbić na tokeny, jeśli nie to dlaczego
             if (wynik.ErrorLog[0] == 'E' && wynik.ErrorLog[1] == 'r' && wynik.ErrorLog[2] == 'r')
             {
                 var data = new
@@ -108,6 +109,7 @@ namespace WebApi.Controllers
                 };
                 return Ok(data);
             }
+            //sprawdzanie liczb podanych przez url
             else if (double.TryParse(from, out tmpDouble) != true)
             {
                 var data = new
@@ -137,8 +139,12 @@ namespace WebApi.Controllers
             }
             else
             {
+                //PostfixCalcMultiXCheck powie nam czy wystąpił błąd przy którymkolwiek z Xów podanych w zakresie
                 bool flagaErr = false;
                 flagaErr = RPNclass.PostfixCalcMultiXCheck(wynik.Postfix_Tokens_Array,  tmpDouble,  tmpDouble2,  tmpInt);
+                //jeśli tak, zwracamy double X, string Y - który może być liczbą albo treścią błędu dla danego X
+                //dane takie nadal mogą być użyte po odfiltrowaniu z nich wpisów z poza dziedziny X
+                //zabezpieczenie przed próbą potraktowania np 2/X przy X=0 (2/0) jako liczbę rzeczywstą 
                 if (flagaErr)
                 {
                     WynikError[] result = RPNclass.PostfixCalcMultiXWynikError(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
@@ -152,6 +158,7 @@ namespace WebApi.Controllers
                 }
                 else
                 {
+                    //jeśli jakiegokolwiek błędu nie stwierdzono, wyniki zwracane w postaci double X, double Y, gotowe do dalszego przetwarzania
                     Wynik[] result = RPNclass.PostfixCalcMultiXWynik(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
                     var data = new
                     {
