@@ -141,20 +141,22 @@ namespace WebApi.Controllers
                 flagaErr = RPNclass.PostfixCalcMultiXCheck(wynik.Postfix_Tokens_Array,  tmpDouble,  tmpDouble2,  tmpInt);
                 if (flagaErr)
                 {
+                    WynikError[] result = RPNclass.PostfixCalcMultiXWynikError(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
                     var data = new
                     {
                         status = "error",
                         message = "Error: for some 'x', errors have occured",
-                        result = RPNclass.PostfixCalcMultiX(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt)
+                        result = result
                     };
                     return Ok(data);
                 }
                 else
                 {
+                    Wynik[] result = RPNclass.PostfixCalcMultiXWynik(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
                     var data = new
                     {
                         status = "ok",
-                        result  =  RPNclass.PostfixCalcMultiX(wynik.Postfix_Tokens_Array,tmpDouble,tmpDouble2,tmpInt)
+                        result  =  result
                     };
                     return Ok(data);
                 }

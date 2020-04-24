@@ -6,6 +6,22 @@ using System.Text;
 
 namespace WebApi
 {
+    public class Wynik
+    {
+        //wszystkie dane są wartościami liczbowymi
+        public double X;
+        public double Y;
+    }
+    public class WynikError
+    {
+        /*
+         * przed jakimkolwiek przetwarzaniem, zestaw wyników Y musi być sprawdzony 
+         * pole Y może zawierać informacje o próbie podzielenia przez 0 czy innych błędach
+         * możliwość "odzysku" poprawnej części poprzez parsowanie string -> double
+         */
+        public double X;
+        public string Y;
+    }
     public class RPNclass
     {
         public static string EchoTest = "Echo!";
@@ -14,8 +30,11 @@ namespace WebApi
         public string Postfix_Tokens_String = "";
         public string[] Infix_Tokens_Array;
         public string[] Postfix_Tokens_Array;
-        public RPNclass(string input)
+
+        
+    public RPNclass(string input)
         {
+            
             string tmpString = inputCheck(input);
             if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { /*Console.WriteLine(tmpString);*/ ErrorLog = tmpString; return; }
             tmpString = InfixTokens(tmpString);
@@ -463,6 +482,33 @@ namespace WebApi
                 else tablica[i] = "{ " + '"' + "x" + '"' + " : " + (input, X_min + (step * i)) + ", " + '"' + "y" + '"' + " : " + PostfixCalcSingleX(input, X_min + (step * i)) + " }";
                 //tablica[i, 0] = (X_min + (step * i)).ToString();
                 //tablica[i,1] = PostfixCalcSingleX(input, X_min + (step * i));
+            }
+            return tablica;
+        }
+        public static Wynik[] PostfixCalcMultiXWynik(string[] input, double X_min, double X_max, int N)
+        {
+
+            double step = (X_max - X_min) / (N - 1);
+            Wynik[] tablica = new Wynik[N];
+            for (int i = 0; i < N; i++)
+            {
+                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+                tablica[i] = new Wynik();
+                tablica[i].X = (X_min + (step * i));
+                tablica[i].Y = double.Parse(PostfixCalcSingleX(input, X_min + (step * i)));
+            }
+            return tablica;
+        }
+        public static WynikError[] PostfixCalcMultiXWynikError(string[] input, double X_min, double X_max, int N)
+        {
+            double step = (X_max - X_min) / (N - 1);
+            WynikError[] tablica = new WynikError[N];
+            for (int i = 0; i < N; i++)
+            {
+                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
+                tablica[i] = new WynikError();
+                tablica[i].X = (X_min + (step * i));
+                tablica[i].Y = PostfixCalcSingleX(input, X_min + (step * i));
             }
             return tablica;
         }
