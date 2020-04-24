@@ -26,207 +26,190 @@ namespace WebApi
     {
         public static string EchoTest = "Echo!";
         public string ErrorLog="No issues";
-        public string Infix_Tokens_String = "";
-        public string Postfix_Tokens_String = "";
-        public string[] Infix_Tokens_Array;
-        public string[] Postfix_Tokens_Array;
+        public string InfixTokensString = "";
+        public string PostfixTokensString = "";
+        public string[] InfixTokensArray;
+        public string[] PostfixTokensArray;
 
         
     public RPNclass(string input)
         {
-            
-            string tmpString = inputCheck(input);
-            if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { /*Console.WriteLine(tmpString);*/ ErrorLog = tmpString; return; }
+            string tmpString = InputCheck(input);
+            if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') {  ErrorLog = tmpString; return; }
             tmpString = InfixTokens(tmpString);
-            if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { /*Console.WriteLine(tmpString);*/ ErrorLog = tmpString;return; }
-            Infix_Tokens_String = tmpString;
-            //Console.WriteLine(Infix_Tokens_String);
-            Infix_Tokens_Array = new string[InfixTokensCount(Infix_Tokens_String)];
-            //Console.WriteLine("InfixTokensCount = " + InfixTokensCount(Infix_Tokens_String));
-            Infix_Tokens_Array = SplitInfixTokens(Infix_Tokens_String, InfixTokensCount(Infix_Tokens_String));
-            //for (int i = 0; i < Infix_Tokens_Array.Length; i++) Console.WriteLine("InfixToken " + i + " : " + Infix_Tokens_Array[i]);
-            Postfix_Tokens_String = InfixToPostfix(Infix_Tokens_Array);
-            Postfix_Tokens_Array = new string[PostfixTokensCount(Postfix_Tokens_String)];
-            Postfix_Tokens_Array = SplitPostfixTokens(Postfix_Tokens_String, PostfixTokensCount(Postfix_Tokens_String));
-            //for (int i = 0; i < Postfix_Tokens_Array.Length; i++) Console.WriteLine("PostfixToken " + i + " : " + Postfix_Tokens_Array[i]);
-            //Console.WriteLine(PostfixCalcSingleX(Postfix_Tokens_Array, 0.0));
-
+            if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') {  ErrorLog = tmpString;return; }
+            InfixTokensString = tmpString;
+            InfixTokensArray = new string[InfixTokensCount(InfixTokensString)];
+            InfixTokensArray = SplitInfixTokens(InfixTokensString, InfixTokensCount(InfixTokensString));
+            PostfixTokensString = InfixToPostfix(InfixTokensArray);
+            PostfixTokensArray = new string[PostfixTokensCount(PostfixTokensString)];
+            PostfixTokensArray = SplitPostfixTokens(PostfixTokensString, PostfixTokensCount(PostfixTokensString));
         }
 
-        public static string inputCheck(string input)
+        public static string InputCheck(string input)
         {
-            int dlugoscInput = input.Length;
-            string tekst = "";
-            for (int i = 0; i < dlugoscInput; i++)
+            int DlugoscInput = input.Length;
+            string Tekst = "";
+            for (int i = 0; i < DlugoscInput; i++)
             {
-                if (input[i] != ' ') tekst += input[i];
+                if (input[i] != ' ') Tekst += input[i];
             }
-            string wynik = "";
-            int dlugosc = tekst.Length;
-            int nawias = 0;
-            //bool ujemna = false;
-            bool kropka = false;
-            for (int i = 0; i < dlugosc; i++)
+            string Wynik = "";
+            int Dlugosc = Tekst.Length;
+            int Nawias = 0;
+            bool Kropka = false;
+            for (int i = 0; i < Dlugosc; i++)
             {
-                if (nawias < 0) return "Error, unmatched ( ) symbols.";
+                if (Nawias < 0) return "Error, unmatched ( ) symbols.";
                 if (i == 0)
                 {
-                    if (tekst[i] == '-')
+                    if (Tekst[i] == '-')
                     {
-                        wynik += "(0-1)*";
+                        Wynik += "(0-1)*";
                         continue;
                     }
-                    if (tekst[i] == '+') continue;
-                    else if (tekst[i] == '0' || tekst[i] == '1' || tekst[i] == '2' || tekst[i] == '3' || tekst[i] == '4' || tekst[i] == '5'
-                       || tekst[i] == '6' || tekst[i] == '7' || tekst[i] == '8' || tekst[i] == '9' || tekst[i] == 'x') { wynik += tekst[i]; continue; }
-                    else if (tekst[i] == '(') { nawias++; wynik += '('; continue; }
-                    else if (tekst.Length - i >= 6)
+                    if (Tekst[i] == '+') continue;
+                    else if (Tekst[i] == '0' || Tekst[i] == '1' || Tekst[i] == '2' || Tekst[i] == '3' || Tekst[i] == '4' || Tekst[i] == '5'
+                       || Tekst[i] == '6' || Tekst[i] == '7' || Tekst[i] == '8' || Tekst[i] == '9' || Tekst[i] == 'x') { Wynik += Tekst[i]; continue; }
+                    else if (Tekst[i] == '(') { Nawias++; Wynik += '('; continue; }
+                    else if (Tekst.Length - i >= 6)
                     {
-                        if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "sin(") { wynik += "sin("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "cos(") { wynik += "cos("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "tan(") { wynik += "tan("; i += 3; nawias++; continue; }
-
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "exp(") { wynik += "exp("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "log(") { wynik += "log("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "abs(") { wynik += "abs("; i += 3; nawias++; continue; }
-                        else if (tekst.Length - i >= 7)
+                        if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "sin(") { Wynik += "sin("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "cos(") { Wynik += "cos("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "tan(") { Wynik += "tan("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "exp(") { Wynik += "exp("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "log(") { Wynik += "log("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "abs(") { Wynik += "abs("; i += 3; Nawias++; continue; }
+                        else if (Tekst.Length - i >= 7)
                         {
-                            if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "sqrt(") { wynik += "sqrt("; nawias++; i += 4; continue; }
-
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "sinh(") { wynik += "sinh("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "cosh(") { wynik += "cosh("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "tanh(") { wynik += "tanh("; nawias++; i += 4; continue; }
-
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "asin(") { wynik += "asin("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "acos(") { wynik += "acos("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "atan(") { wynik += "atan("; nawias++; i += 4; continue; }
+                            if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "sqrt(") { Wynik += "sqrt("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "sinh(") { Wynik += "sinh("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "cosh(") { Wynik += "cosh("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "tanh(") { Wynik += "tanh("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "asin(") { Wynik += "asin("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "acos(") { Wynik += "acos("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "atan(") { Wynik += "atan("; Nawias++; i += 4; continue; }
                         }
-
                     }
-                    wynik = "Error, unknown symbol at beggining."; break; 
+                    Wynik = "Error, unknown symbol at beggining."; break; 
                 }
                 else
                 {
-                    if ((tekst[i] == '0' || tekst[i] == '1' || tekst[i] == '2' || tekst[i] == '3' || tekst[i] == '4' || tekst[i] == '5'
-                       || tekst[i] == '6' || tekst[i] == '7' || tekst[i] == '8' || tekst[i] == '9' || tekst[i] == 'x') && tekst[i - 1] == 'x') { wynik = "Error. Number after X."; break; }
-                    else if (tekst[i] == 'x' && (tekst[i - 1] == '0' || tekst[i - 1] == '1' || tekst[i - 1] == '2' || tekst[i - 1] == '3' || tekst[i - 1] == '4' ||
-                        tekst[i - 1] == '5' || tekst[i - 1] == '6' || tekst[i - 1] == '7' || tekst[i - 1] == '8' || tekst[i - 1] == '9')) {
-                        wynik += "*x";
+                    if ((Tekst[i] == '0' || Tekst[i] == '1' || Tekst[i] == '2' || Tekst[i] == '3' || Tekst[i] == '4' || Tekst[i] == '5'
+                       || Tekst[i] == '6' || Tekst[i] == '7' || Tekst[i] == '8' || Tekst[i] == '9' || Tekst[i] == 'x') && Tekst[i - 1] == 'x') { Wynik = "Error. Number after X."; break; }
+                    else if (Tekst[i] == 'x' && (Tekst[i - 1] == '0' || Tekst[i - 1] == '1' || Tekst[i - 1] == '2' || Tekst[i - 1] == '3' || Tekst[i - 1] == '4' ||
+                        Tekst[i - 1] == '5' || Tekst[i - 1] == '6' || Tekst[i - 1] == '7' || Tekst[i - 1] == '8' || Tekst[i - 1] == '9')) {
+                        Wynik += "*x";
                         continue;
                     }
-                    else if (tekst[i] == '0' || tekst[i] == '1' || tekst[i] == '2' || tekst[i] == '3' || tekst[i] == '4' || tekst[i] == '5'
-                       || tekst[i] == '6' || tekst[i] == '7' || tekst[i] == '8' || tekst[i] == '9' || tekst[i] == 'x') { wynik += tekst[i]; continue; }
-                    else if (tekst[i] == '.' || tekst[i] == ',')
+                    else if (Tekst[i] == '0' || Tekst[i] == '1' || Tekst[i] == '2' || Tekst[i] == '3' || Tekst[i] == '4' || Tekst[i] == '5'
+                       || Tekst[i] == '6' || Tekst[i] == '7' || Tekst[i] == '8' || Tekst[i] == '9' || Tekst[i] == 'x') { Wynik += Tekst[i]; continue; }
+                    else if (Tekst[i] == '.' || Tekst[i] == ',')
                     {
-                        if (i == tekst.Length - 1) { wynik = "Error. Dot/comma at end."; break; }
+                        if (i == Tekst.Length - 1) { Wynik = "Error. Dot/comma at end."; break; }
                         else
                         {
-                            if ((tekst[i - 1] == '0' || tekst[i - 1] == '1' || tekst[i - 1] == '2' || tekst[i - 1] == '3' || tekst[i - 1] == '4' || tekst[i - 1] == '5'
-                       || tekst[i - 1] == '6' || tekst[i - 1] == '7' || tekst[i - 1] == '8' || tekst[i - 1] == '9') && (tekst[i + 1] == '0' || tekst[i + 1] == '1' || tekst[i + 1] == '2' || tekst[i + 1] == '3' || tekst[i + 1] == '4' || tekst[i + 1] == '5'
-                       || tekst[i + 1] == '6' || tekst[i + 1] == '7' || tekst[i + 1] == '8' || tekst[i + 1] == '9')) {
-                                if (kropka == false) { wynik += ","; kropka = true; continue; }
-                                else { wynik = "Error. Multiple dots/commas in expected double. "; break; }
+                            if ((Tekst[i - 1] == '0' || Tekst[i - 1] == '1' || Tekst[i - 1] == '2' || Tekst[i - 1] == '3' || Tekst[i - 1] == '4' || Tekst[i - 1] == '5'
+                       || Tekst[i - 1] == '6' || Tekst[i - 1] == '7' || Tekst[i - 1] == '8' || Tekst[i - 1] == '9') && (Tekst[i + 1] == '0' || Tekst[i + 1] == '1' || Tekst[i + 1] == '2' || Tekst[i + 1] == '3' || Tekst[i + 1] == '4' || Tekst[i + 1] == '5'
+                       || Tekst[i + 1] == '6' || Tekst[i + 1] == '7' || Tekst[i + 1] == '8' || Tekst[i + 1] == '9')) {
+                                if (Kropka == false) { Wynik += ","; Kropka = true; continue; }
+                                else { Wynik = "Error. Multiple dots/commas in expected double. "; break; }
                             }
-                            else { wynik = "Error. Dot/comma not inside of number."; break; }
+                            else { Wynik = "Error. Dot/comma not inside of number."; break; }
                         }
                     }
                     // v jeśli żadne z powyższych, liczba się skończyła i będzie jakiś znak v
-                    kropka = false; // w tej liczbie fizycznie nie wystąpi przecinek po raz drugi
-                    if (tekst[i] == '-' && (tekst[i - 1] == '*' || tekst[i - 1] == '/' || tekst[i - 1] == '('))
+                    Kropka = false; // w tej liczbie fizycznie nie wystąpi przecinek po raz drugi
+                    if (Tekst[i] == '-' && (Tekst[i - 1] == '*' || Tekst[i - 1] == '/' || Tekst[i - 1] == '('))
                     {
-                        wynik += "(0-1)*";
+                        Wynik += "(0-1)*";
                         continue;
                     }
-                    else if ((tekst[i] == '-' || tekst[i] == '+') && (tekst[i - 1] == '-' || tekst[i - 1] == '+')) {
-                        wynik = "Error, repeated operation token.";
+                    else if ((Tekst[i] == '-' || Tekst[i] == '+') && (Tekst[i - 1] == '-' || Tekst[i - 1] == '+')) {
+                        Wynik = "Error, repeated operation token.";
                         break;
                     }
-                    else if ((tekst[i] == '*' || tekst[i] == '/' || tekst[i] == '^') && (tekst[i - 1] == '-' || tekst[i - 1] == '+' || tekst[i - 1] == '^'))
+                    else if ((Tekst[i] == '*' || Tekst[i] == '/' || Tekst[i] == '^') && (Tekst[i - 1] == '-' || Tekst[i - 1] == '+' || Tekst[i - 1] == '^'))
                     {
-                        wynik = "Error, repeated operation token.";
+                        Wynik = "Error, repeated operation token.";
                         break;
                     }
-                    else if (tekst[i] == '+' && (tekst[i - 1] == '*' || tekst[i - 1] == '/' || tekst[i - 1] == '('))
+                    else if (Tekst[i] == '+' && (Tekst[i - 1] == '*' || Tekst[i - 1] == '/' || Tekst[i - 1] == '('))
                     {
                         continue;
                     }
-                    else if (tekst[i] == '+' || tekst[i] == '-' || tekst[i] == '*' || tekst[i] == '/' || tekst[i] == '^') { wynik += tekst[i]; continue; }
-                    else if (tekst[i] == '(') { nawias++; wynik += tekst[i]; continue; }
-                    else if (tekst[i] == ')') { nawias--; wynik += tekst[i]; continue; }
-                    else if (tekst.Length - i >= 6)
+                    else if (Tekst[i] == '+' || Tekst[i] == '-' || Tekst[i] == '*' || Tekst[i] == '/' || Tekst[i] == '^') { Wynik += Tekst[i]; continue; }
+                    else if (Tekst[i] == '(') { Nawias++; Wynik += Tekst[i]; continue; }
+                    else if (Tekst[i] == ')') { Nawias--; Wynik += Tekst[i]; continue; }
+                    else if (Tekst.Length - i >= 6)
                     {
-                        if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "sin(") { wynik += "sin("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "cos(") { wynik += "cos("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "tan(") { wynik += "tan("; i += 3; nawias++; continue; }
+                        if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "sin(") { Wynik += "sin("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "cos(") { Wynik += "cos("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "tan(") { Wynik += "tan("; i += 3; Nawias++; continue; }
 
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "exp(") { wynik += "exp("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "log(") { wynik += "log("; i += 3; nawias++; continue; }
-                        else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] == "abs(") { wynik += "abs("; i += 3; nawias++; continue; }
-                        else if (tekst.Length - i >= 7)
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "exp(") { Wynik += "exp("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "log(") { Wynik += "log("; i += 3; Nawias++; continue; }
+                        else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] == "abs(") { Wynik += "abs("; i += 3; Nawias++; continue; }
+                        else if (Tekst.Length - i >= 7)
                         {
-                            if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "sqrt(") { wynik += "sqrt("; nawias++; i += 4; continue; }
+                            if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "sqrt(") { Wynik += "sqrt("; Nawias++; i += 4; continue; }
 
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "sinh(") { wynik += "sinh("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "cosh(") { wynik += "cosh("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "tanh(") { wynik += "tanh("; nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "sinh(") { Wynik += "sinh("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "cosh(") { Wynik += "cosh("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "tanh(") { Wynik += "tanh("; Nawias++; i += 4; continue; }
 
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "asin(") { wynik += "asin("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "acos(") { wynik += "acos("; nawias++; i += 4; continue; }
-                            else if ("" + tekst[i] + tekst[i + 1] + tekst[i + 2] + tekst[i + 3] + tekst[i + 4] == "atan(") { wynik += "atan("; nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "asin(") { Wynik += "asin("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "acos(") { Wynik += "acos("; Nawias++; i += 4; continue; }
+                            else if ("" + Tekst[i] + Tekst[i + 1] + Tekst[i + 2] + Tekst[i + 3] + Tekst[i + 4] == "atan(") { Wynik += "atan("; Nawias++; i += 4; continue; }
                             else
                             {
-                                wynik = "Error. Unknown symbol: " + tekst[i];
+                                Wynik = "Error. Unknown symbol: " + Tekst[i];
                                 break;
                             }
                         }
                         else {
-                            wynik = "Error. Unknown symbol: " + tekst[i];
+                            Wynik = "Error. Unknown symbol: " + Tekst[i];
                             break;
                         }
                     }
                     else
                     {
-                        wynik = "Error. Unknown symbol." + tekst[i];
+                        Wynik = "Error. Unknown symbol." + Tekst[i];
                         break;
                     }
                 }
 
             }
-            return wynik;
+            return Wynik;
         }
         public static string InfixTokens(string input)
         {
-            string inputText;
-            inputText = inputCheck(input);
-            if (inputText[0] == 'E' && inputText[1] == 'r' && inputText[2] == 'r') return inputText;
-            //bool negative = false;
-            string result = "";
-            for (int i = 0; i < inputText.Length; i++)
+            string InputText;
+            InputText = InputCheck(input);
+            if (InputText[0] == 'E' && InputText[1] == 'r' && InputText[2] == 'r') return InputText;
+            string Result = "";
+            for (int i = 0; i < InputText.Length; i++)
             {
-                if (inputText[i] == '(' && inputText[i + 1] == '0' && inputText[i + 2] == '-' && inputText[i + 3] == '1' && inputText[i + 4] == ')' && inputText[i + 5] == '*') { result += '-'; i += 5; continue; }
-                else if (inputText[i] == '(' || inputText[i] == ')' || inputText[i] == '+' || inputText[i] == '-' || inputText[i] == '*' || inputText[i] == '/' || inputText[i] == '^') { result += (" " + inputText[i] + " "); continue; }
-                else if (inputText[i] == '0' || inputText[i] == '1' || inputText[i] == '2' || inputText[i] == '3' || inputText[i] == '4' || inputText[i] == '5' || inputText[i] == '6' || inputText[i] == '7' ||
-                    inputText[i] == '8' || inputText[i] == '9' || inputText[i] == 'x' || inputText[i] == ',') { result += inputText[i]; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "sin(") { result += "sin"; i += 2; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "cos(") { result += "cos"; i += 2; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "tng(") { result += "cos"; i += 2; continue; }
-
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "log(") { result += "log"; i += 2; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "abs(") { result += "abs"; i += 2; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "exp(") { result += "exp"; i += 2; continue; }
-
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "sqrt") { result += "sqrt"; i += 3; continue; }
-
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "asin") { result += "asin"; i += 3; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "acos") { result += "acos"; i += 3; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "atan") { result += "atan"; i += 3; continue; }
-
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "sinh") { result += "sinh"; i += 3; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "cosh") { result += "cosh"; i += 3; continue; }
-                else if ("" + inputText[i] + inputText[i + 1] + inputText[i + 2] + inputText[i + 3] == "tanh") { result += "tanh"; i += 3; continue; }
-                else { result = "Error. Unknown: " + inputText[i]; return result; }
+                if (InputText[i] == '(' && InputText[i + 1] == '0' && InputText[i + 2] == '-' && InputText[i + 3] == '1' && InputText[i + 4] == ')' && InputText[i + 5] == '*') { Result += '-'; i += 5; continue; }
+                else if (InputText[i] == '(' || InputText[i] == ')' || InputText[i] == '+' || InputText[i] == '-' || InputText[i] == '*' || InputText[i] == '/' || InputText[i] == '^') { Result += (" " + InputText[i] + " "); continue; }
+                else if (InputText[i] == '0' || InputText[i] == '1' || InputText[i] == '2' || InputText[i] == '3' || InputText[i] == '4' || InputText[i] == '5' || InputText[i] == '6' || InputText[i] == '7' ||
+                    InputText[i] == '8' || InputText[i] == '9' || InputText[i] == 'x' || InputText[i] == ',') { Result += InputText[i]; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "sin(") { Result += "sin"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "cos(") { Result += "cos"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "tng(") { Result += "cos"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "log(") { Result += "log"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "abs(") { Result += "abs"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "exp(") { Result += "exp"; i += 2; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "sqrt") { Result += "sqrt"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "asin") { Result += "asin"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "acos") { Result += "acos"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "atan") { Result += "atan"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "sinh") { Result += "sinh"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "cosh") { Result += "cosh"; i += 3; continue; }
+                else if ("" + InputText[i] + InputText[i + 1] + InputText[i + 2] + InputText[i + 3] == "tanh") { Result += "tanh"; i += 3; continue; }
+                else { Result = "Error. Unknown: " + InputText[i]; return Result; }
             }
-            return result;
+            return Result;
         }
         public static int InfixTokensCount(string input)
         {
@@ -246,7 +229,7 @@ namespace WebApi
         public static string[] SplitInfixTokens(string input, int TabCount)
         {
             string[] tab = new string[TabCount];
-            int tokensInArray = 0;
+            int TokensInArray = 0;
             string tmpString = "";
             for (int i = 0; i < input.Length; i++)
             {
@@ -255,22 +238,20 @@ namespace WebApi
                 if (input[i] == ' ')
                 {
                     if (input[i - 1] == ' ') continue;
-                    tab[tokensInArray] = tmpString;
-                    //Console.WriteLine("Token : " + tokensInArray + " : " + tmpString);
-                    tokensInArray++;
+                    tab[TokensInArray] = tmpString;
+                    TokensInArray++;
                     tmpString = "";
                     continue;
                 }
                 tmpString += input[i];
             }
-            tab[tokensInArray] = tmpString;
-            //Console.WriteLine("Token : " + tokensInArray + " : " + tmpString);
-            tokensInArray++;
+            tab[TokensInArray] = tmpString;
+            TokensInArray++;
             return tab;
         }
         public static string InfixToPostfix(string[] t)
         {
-            string result= "";
+            string Result= "";
             Queue Q = new Queue();
             Stack S = new Stack();
             Dictionary<string, int> D = new Dictionary<string, int>
@@ -283,7 +264,6 @@ namespace WebApi
             };
             for(int i = 0; i < t.Length; i++)
             {
-                //Console.Write("Test dla: "+t[i]+": ");
                 if (t[i] == "(") S.Push(t[i]);
                 else if (t[i] == ")")
                 {
@@ -302,7 +282,6 @@ namespace WebApi
                     S.Push(t[i]);
                 }
                 else Q.Enqueue(t[i]);
-                //Console.Write(t[i] + "\n");
             }
             while (S.Count > 0)
             {
@@ -310,10 +289,9 @@ namespace WebApi
             }
             foreach (string token in Q)
             {
-                result += token + " ";
+                Result += token + " ";
             }
-            //Console.WriteLine(result);
-            return result;
+            return Result;
         }
         public static int PostfixTokensCount(string input)
         {
@@ -323,7 +301,6 @@ namespace WebApi
                 if (input[i] == ' ')
                 {
                     if (i == 0 || i == input.Length - 1) continue;
-                    
                     TabCount++;
                 }
             }
@@ -331,30 +308,27 @@ namespace WebApi
         }
         public static string[] SplitPostfixTokens(string input, int TabCount)
         {
-            string[] tab = new string[TabCount];
-            int tokensInArray = 0;
+            string[] Tab = new string[TabCount];
+            int TokensInArray = 0;
             string tmpString = "";
             for (int i = 0; i < input.Length; i++)
             {
                 if (input[i] == ' ')
                 {
-                    tab[tokensInArray] = tmpString;
-                    tokensInArray++;
+                    Tab[TokensInArray] = tmpString;
+                    TokensInArray++;
                     tmpString = "";
                     continue;
                 }
                 tmpString += input[i];
             }
-            //tab[tokensInArray] = tmpString;
-            //tokensInArray++;
-            return tab;
+            return Tab;
         }
         public static string PostfixCalcSingleX(string[] input, double X) {
             Stack S = new Stack();
             double tmpDoub;
             double tmpA;
             double tmpB;
-            //double result;
             foreach (string t in input)
             {
                 if (double.TryParse(t, out double doubleT) == true)
@@ -366,7 +340,6 @@ namespace WebApi
                 {
                     S.Push(X);
                 }
-
                 if (t == "abs") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(Math.Abs(tmpDoub).ToString()); }
                 else if (t == "-abs") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1)*Math.Abs(tmpDoub)).ToString()); }
                 else if(t == "exp") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(Math.Exp(tmpDoub).ToString()); }
@@ -391,14 +364,16 @@ namespace WebApi
                     if (tmpDoub < 0) return "Error. X cannot be less than 0";
                     S.Push(((-1) * Math.Abs(tmpDoub)).ToString());
                 }
-
-                else if (t == "tan") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(Math.Tan(tmpDoub).ToString()); } //wartości PI/2 +kPI są poza dziedziną tangensa. Niemożliwe jest jednak precyzyjne
-                else if (t == "-tan") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Tan(tmpDoub)).ToString()); } // podanie takich wartości dla programu ze względu na naturę liczby PI
+                /*
+                 * wartości PI/2 +kPI są poza dziedziną tangensa. Niemożliwe jest jednak precyzyjne
+                 * podanie takich wartości dla programu ze względu na naturę liczby PI
+                 */
+                else if (t == "tan") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(Math.Tan(tmpDoub).ToString()); }
+                else if (t == "-tan") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Tan(tmpDoub)).ToString()); }
                 else if (t == "sin") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push((Math.Sin(tmpDoub)).ToString()); }
                 else if (t == "-sin") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Sin(tmpDoub)).ToString()); }
                 else if (t == "cos") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push((Math.Cos(tmpDoub)).ToString()); }
                 else if (t == "-cos") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Cos(tmpDoub)).ToString()); }
-
                 else if (t == "asin") {
                     tmpDoub = double.Parse(S.Pop().ToString());
                     if (tmpDoub < -1.0 || tmpDoub > 1.0) return "Error. X cannot be  less than (-1) or greater than 1.";
@@ -428,7 +403,6 @@ namespace WebApi
                 else if (t == "-cosh") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Cosh(tmpDoub)).ToString()); }
                 else if (t == "tanh") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push((Math.Tanh(tmpDoub)).ToString()); }
                 else if (t == "-tanh") { tmpDoub = double.Parse(S.Pop().ToString()); S.Push(((-1) * Math.Tanh(tmpDoub)).ToString()); }
-
                 else if (t == "+")
                 {
                     tmpA = double.Parse(S.Pop().ToString());
@@ -466,77 +440,67 @@ namespace WebApi
                     S.Push(tmpA.ToString());
                 }
             }
-
             return S.Pop().ToString();
         }
         public static string[] PostfixCalcMultiXJSON(string[] input, double X_min, double X_max, int N)
         {
-            double step = (X_max - X_min) / (N - 1);
-            string[] tablica = new string[N];
+            double Step = (X_max - X_min) / (N - 1);
+            string[] Tablica = new string[N];
             string tmpString;
             for (int i = 0; i < N; i++)
             {
-                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
-                tmpString = PostfixCalcSingleX(input, X_min + (step * i));
-                if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') tablica[i] = "{ " + '"' + "x" + '"' + " : " + (input, X_min + (step * i)) + ", " + '"' + "y" + '"' + " : " + tmpString + " }";
-                else tablica[i] = "{ " + '"' + "x" + '"' + " : " + (input, X_min + (step * i)) + ", " + '"' + "y" + '"' + " : " + PostfixCalcSingleX(input, X_min + (step * i)) + " }";
-                //tablica[i, 0] = (X_min + (step * i)).ToString();
-                //tablica[i,1] = PostfixCalcSingleX(input, X_min + (step * i));
+                tmpString = PostfixCalcSingleX(input, X_min + (Step * i));
+                if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') Tablica[i] = "{ " + '"' + "x" + '"' + " : " + (input, X_min + (Step * i)) + ", " + '"' + "y" + '"' + " : " + tmpString + " }";
+                else Tablica[i] = "{ " + '"' + "x" + '"' + " : " + (input, X_min + (Step * i)) + ", " + '"' + "y" + '"' + " : " + PostfixCalcSingleX(input, X_min + (Step * i)) + " }";
             }
-            return tablica;
+            return Tablica;
         }
         public static Wynik[] PostfixCalcMultiXWynik(string[] input, double X_min, double X_max, int N)
         {
-
-            double step = (X_max - X_min) / (N - 1);
-            Wynik[] tablica = new Wynik[N];
+            double Step = (X_max - X_min) / (N - 1);
+            Wynik[] Tablica = new Wynik[N];
             for (int i = 0; i < N; i++)
             {
-                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
-                tablica[i] = new Wynik();
-                tablica[i].X = (X_min + (step * i));
-                tablica[i].Y = double.Parse(PostfixCalcSingleX(input, X_min + (step * i)));
+                Tablica[i] = new Wynik();
+                Tablica[i].X = (X_min + (Step * i));
+                Tablica[i].Y = double.Parse(PostfixCalcSingleX(input, X_min + (Step * i)));
             }
-            return tablica;
+            return Tablica;
         }
         public static WynikError[] PostfixCalcMultiXWynikError(string[] input, double X_min, double X_max, int N)
         {
-            double step = (X_max - X_min) / (N - 1);
-            WynikError[] tablica = new WynikError[N];
+            double Step = (X_max - X_min) / (N - 1);
+            WynikError[] Tablica = new WynikError[N];
             for (int i = 0; i < N; i++)
             {
-                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
-                tablica[i] = new WynikError();
-                tablica[i].X = (X_min + (step * i));
-                tablica[i].Y = PostfixCalcSingleX(input, X_min + (step * i));
+                Tablica[i] = new WynikError();
+                Tablica[i].X = (X_min + (Step * i));
+                Tablica[i].Y = PostfixCalcSingleX(input, X_min + (Step * i));
             }
-            return tablica;
+            return Tablica;
         }
         public static string[,] PostfixCalcMultiX(string[] input, double X_min, double X_max, int N)
         {
-
-            double step = (X_max - X_min) / (N - 1);
-            string[,] tablica = new string[N, 2];
+            double Step = (X_max - X_min) / (N - 1);
+            string[,] Tablica = new string[N, 2];
             for (int i = 0; i < N; i++)
             {
-                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
-                tablica[i, 0] = (X_min + (step * i)).ToString();
-                tablica[i, 1] = PostfixCalcSingleX(input, X_min + (step * i));
+                Tablica[i, 0] = (X_min + (Step * i)).ToString();
+                Tablica[i, 1] = PostfixCalcSingleX(input, X_min + (Step * i));
             }
-            return tablica;
+            return Tablica;
         }
         public static bool PostfixCalcMultiXCheck(string[] input, double X_min, double X_max, int N)
         {
-            double step = (X_max - X_min) / (N - 1);
-            bool flagError = false;
+            double Step = (X_max - X_min) / (N - 1);
+            bool FlagError = false;
             string tmpString = "jest ok";
             for (int i = 0; i < N; i++)
             {
-                //Console.WriteLine(X_min + (i * step) + " => " + PostfixCalcSingleX(input, X_min + (step * i)));
-                tmpString = PostfixCalcSingleX(input, X_min + (step * i));
-                if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { flagError = true; return flagError; }
+                tmpString = PostfixCalcSingleX(input, X_min + (Step * i));
+                if (tmpString[0] == 'E' && tmpString[1] == 'r' && tmpString[2] == 'r') { FlagError = true; return FlagError; }
             }
-            return flagError;
+            return FlagError;
         }
     }
 }

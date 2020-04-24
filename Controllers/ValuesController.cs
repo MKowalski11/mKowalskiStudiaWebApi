@@ -33,8 +33,8 @@ namespace WebApi.Controllers
                 var data = new
                 {
                     status = stan,
-                    infix = result.Infix_Tokens_Array,
-                    rpn = result.Postfix_Tokens_Array
+                    infix = result.InfixTokensArray,
+                    rpn = result.PostfixTokensArray
                 };
                 return Ok(data);
             }
@@ -68,7 +68,7 @@ namespace WebApi.Controllers
                 return Ok(data);
             }
             else {
-                string wynik = RPNclass.PostfixCalcSingleX(result.Postfix_Tokens_Array, tmpDouble);
+                string wynik = RPNclass.PostfixCalcSingleX(result.PostfixTokensArray, tmpDouble);
                 //wynik zostanie zwrócony jako string - albo liczba/wynik albo error code w przypadku niedozwolonej operacji/wyjątku co należy zweryfikować
                 if (double.TryParse(wynik, out tmpDouble) != true)
                 {
@@ -141,13 +141,13 @@ namespace WebApi.Controllers
             {
                 //PostfixCalcMultiXCheck powie nam czy wystąpił błąd przy którymkolwiek z Xów podanych w zakresie
                 bool flagaErr = false;
-                flagaErr = RPNclass.PostfixCalcMultiXCheck(wynik.Postfix_Tokens_Array,  tmpDouble,  tmpDouble2,  tmpInt);
+                flagaErr = RPNclass.PostfixCalcMultiXCheck(wynik.PostfixTokensArray,  tmpDouble,  tmpDouble2,  tmpInt);
                 //jeśli tak, zwracamy double X, string Y - który może być liczbą albo treścią błędu dla danego X
                 //dane takie nadal mogą być użyte po odfiltrowaniu z nich wpisów z poza dziedziny X
                 //zabezpieczenie przed próbą potraktowania np 2/X przy X=0 (2/0) jako liczbę rzeczywstą 
                 if (flagaErr)
                 {
-                    WynikError[] result = RPNclass.PostfixCalcMultiXWynikError(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
+                    WynikError[] result = RPNclass.PostfixCalcMultiXWynikError(wynik.PostfixTokensArray, tmpDouble, tmpDouble2, tmpInt);
                     var data = new
                     {
                         status = "error",
@@ -159,7 +159,7 @@ namespace WebApi.Controllers
                 else
                 {
                     //jeśli jakiegokolwiek błędu nie stwierdzono, wyniki zwracane w postaci double X, double Y, gotowe do dalszego przetwarzania
-                    Wynik[] result = RPNclass.PostfixCalcMultiXWynik(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt);
+                    Wynik[] result = RPNclass.PostfixCalcMultiXWynik(wynik.PostfixTokensArray, tmpDouble, tmpDouble2, tmpInt);
                     var data = new
                     {
                         status = "ok",
