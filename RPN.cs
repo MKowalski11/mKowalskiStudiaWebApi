@@ -449,7 +449,7 @@ namespace WebApi
 
             return S.Pop().ToString();
         }
-        public static string[,] PostfixCalcMultiX(string[] input, double X, double X_min, double X_max, int N)
+        public static string[,] PostfixCalcMultiX(string[] input, double X_min, double X_max, int N)
         {
             double step = (X_max - X_min) / (N - 1);
             string[,] tablica = new string[N, 2];
@@ -461,7 +461,7 @@ namespace WebApi
             }
             return tablica;
         }
-        public static bool PostfixCalcMultiXCheck(string[] input, double X, double X_min, double X_max, int N)
+        public static bool PostfixCalcMultiXCheck(string[] input, double X_min, double X_max, int N)
         {
             double step = (X_max - X_min) / (N - 1);
             bool flagError = false;

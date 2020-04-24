@@ -96,10 +96,19 @@ namespace WebApi.Controllers
        
         public IActionResult Get(string formula, string from, string to, string n)
         {
-            string stan = "ok";
             double tmpDouble, tmpDouble2;
             int tmpInt;
-            if (double.TryParse(from, out tmpDouble) != true)
+            WebApi.RPNclass wynik = new WebApi.RPNclass(formula);
+            if (wynik.ErrorLog[0] == 'E' && wynik.ErrorLog[1] == 'r' && wynik.ErrorLog[2] == 'r')
+            {
+                var data = new
+                {
+                    status = "error",
+                    message = wynik.ErrorLog
+                };
+                return Ok(data);
+            }
+            else if (double.TryParse(from, out tmpDouble) != true)
             {
                 var data = new
                 {
@@ -128,15 +137,27 @@ namespace WebApi.Controllers
             }
             else
             {
-                var data = new
+                bool flagaErr = false;
+                flagaErr = RPNclass.PostfixCalcMultiXCheck(wynik.Postfix_Tokens_Array,  tmpDouble,  tmpDouble2,  tmpInt);
+                if (flagaErr)
                 {
-                    status = stan,
-                    formula = formula,
-                    from = tmpDouble,
-                    to = tmpDouble2,
-                    n = tmpInt
-                };
-                return Ok(data);
+                    var data = new
+                    {
+                        status = "error",
+                        message = "Error: for some 'x', errors have occured",
+                        result = RPNclass.PostfixCalcMultiX(wynik.Postfix_Tokens_Array, tmpDouble, tmpDouble2, tmpInt)
+                    };
+                    return Ok(data);
+                }
+                else
+                {
+                    var data = new
+                    {
+                        status = "ok",
+                        result  =  RPNclass.PostfixCalcMultiX(wynik.Postfix_Tokens_Array,tmpDouble,tmpDouble2,tmpInt)
+                    };
+                    return Ok(data);
+                }
             }
         }
     }
